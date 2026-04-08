@@ -1,1 +1,146 @@
 # File-Convertor
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glassmorphism File Converter</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        padding: 20px;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 420px;
+        padding: 25px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255,255,255,0.2);
+        color: white;
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .drop {
+        border: 2px dashed rgba(255,255,255,0.5);
+        padding: 25px;
+        border-radius: 15px;
+        text-align: center;
+        transition: 0.3s;
+    }
+
+    .drop:hover {
+        background: rgba(255,255,255,0.15);
+    }
+
+    .drop p {
+        font-size: 14px;
+    }
+
+    .files {
+        margin-top: 15px;
+    }
+
+    .file {
+        background: rgba(255,255,255,0.15);
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .progress {
+        margin-top: 15px;
+        height: 12px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress::before {
+        content: "";
+        display: block;
+        height: 100%;
+        width: 50%;
+        background: linear-gradient(90deg, #00f2fe, #4facfe);
+        animation: move 2s infinite;
+    }
+
+    @keyframes move {
+        0% { width: 20%; }
+        50% { width: 80%; }
+        100% { width: 40%; }
+    }
+
+    button {
+        margin-top: 20px;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 10px;
+        background: white;
+        color: #333;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        transform: scale(1.05);
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+        .card {
+            padding: 18px;
+        }
+
+        h2 {
+            font-size: 20px;
+        }
+
+        .drop {
+            padding: 18px;
+        }
+    }
+
+</style>
+</head>
+<body>
+
+<div class="card">
+    <h2>File Converter</h2>
+
+    <div class="drop">
+        <p>Drag & Drop Files Here</p>
+    </div>
+
+    <div class="files">
+        <div class="file">file1.pdf</div>
+        <div class="file">image.png</div>
+    </div>
+
+    <div class="progress"></div>
+
+    <button>Convert</button>
+</div>
+
+</body>
+</html>
