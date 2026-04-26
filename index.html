@@ -1,146 +1,237 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Glassmorphism File Converter</title>
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Poppins', sans-serif;
-    }
-
-    body {
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        padding: 20px;
-    }
-
-    .card {
-        width: 100%;
-        max-width: 420px;
-        padding: 25px;
-        border-radius: 20px;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(15px);
-        border: 1px solid rgba(255,255,255,0.2);
-        color: white;
-    }
-
-    h2 {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    .drop {
-        border: 2px dashed rgba(255,255,255,0.5);
-        padding: 25px;
-        border-radius: 15px;
-        text-align: center;
-        transition: 0.3s;
-    }
-
-    .drop:hover {
-        background: rgba(255,255,255,0.15);
-    }
-
-    .drop p {
-        font-size: 14px;
-    }
-
-    .files {
-        margin-top: 15px;
-    }
-
-    .file {
-        background: rgba(255,255,255,0.15);
-        padding: 10px;
-        border-radius: 10px;
-        margin-bottom: 8px;
-        font-size: 14px;
-    }
-
-    .progress {
-        margin-top: 15px;
-        height: 12px;
-        background: rgba(255,255,255,0.2);
-        border-radius: 10px;
-        overflow: hidden;
-    }
-
-    .progress::before {
-        content: "";
-        display: block;
-        height: 100%;
-        width: 50%;
-        background: linear-gradient(90deg, #00f2fe, #4facfe);
-        animation: move 2s infinite;
-    }
-
-    @keyframes move {
-        0% { width: 20%; }
-        50% { width: 80%; }
-        100% { width: 40%; }
-    }
-
-    button {
-        margin-top: 20px;
-        width: 100%;
-        padding: 10px;
-        border: none;
-        border-radius: 10px;
-        background: white;
-        color: #333;
-        font-weight: bold;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    button:hover {
-        transform: scale(1.05);
-    }
-
-    /* Responsive */
-    @media (max-width: 480px) {
-        .card {
-            padding: 18px;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro File Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
 
-        h2 {
-            font-size: 20px;
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Animated Abstract Background */
+            background: linear-gradient(45deg, #0f0c29, #302b63, #24243e);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            padding: 15px;
+            overflow: hidden;
         }
 
-        .drop {
-            padding: 18px;
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-    }
 
-</style>
+        /* Glassmorphism Container */
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            text-align: center;
+            color: white;
+            z-index: 1;
+        }
+
+        h2 { margin-bottom: 10px; letter-spacing: 1px; }
+        p { font-size: 14px; margin-bottom: 25px; opacity: 0.8; }
+
+        .upload-box {
+            border: 2px dashed rgba(255, 255, 255, 0.5);
+            padding: 40px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .upload-box:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #00d2ff;
+        }
+
+        #file-info {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .file-card {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            margin-top: 25px;
+            display: none;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 8px;
+            background: linear-gradient(to right, #00d2ff, #3a7bd5);
+            transition: 0.4s;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            margin-top: 25px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .convert-btn {
+            background: #00d2ff;
+            color: white;
+        }
+
+        .convert-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 210, 255, 0.4);
+        }
+
+        .download-btn {
+            background: #43a047;
+            color: white;
+            display: none;
+        }
+
+        /* Decorative Floating Circles */
+        .circle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            z-index: 0;
+        }
+    </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>File Converter</h2>
+<div class="circle" style="width: 200px; height: 200px; top: 10%; left: 10%;"></div>
+<div class="circle" style="width: 300px; height: 300px; bottom: -50px; right: -50px;"></div>
 
-    <div class="drop">
-        <p>Drag & Drop Files Here</p>
+<div class="container">
+    <h2>DocX to PDF</h2>
+    <p>Convert your Word documents instantly</p>
+
+    <input type="file" id="real-input" accept=".docx" hidden>
+    
+    <div class="upload-box" onclick="document.getElementById('real-input').click()">
+        <strong>Select .docx file</strong>
+        <br>
+        <span style="font-size: 12px;">(Only Word documents supported)</span>
     </div>
 
-    <div class="files">
-        <div class="file">file1.pdf</div>
-        <div class="file">image.png</div>
+    <div id="file-info">
+        <div class="file-card">
+            📄 <span id="file-name">None</span>
+        </div>
     </div>
 
-    <div class="progress"></div>
+    <div class="progress-container" id="prog-cont">
+        <div class="progress-bar" id="prog-bar"></div>
+    </div>
 
-    <button>Convert</button>
+    <button class="btn convert-btn" id="convert-btn" onclick="processFile()">Convert to PDF</button>
+    <button class="btn download-btn" id="download-btn" onclick="downloadFile()">Download PDF</button>
 </div>
+
+<script>
+    let pdfBlob = null;
+    let finalFileName = "";
+
+    document.getElementById('real-input').onchange = function() {
+        if (this.files.length > 0) {
+            document.getElementById('file-name').innerText = this.files[0].name;
+            document.getElementById('file-info').style.display = "block";
+            document.getElementById('convert-btn').style.display = "block";
+            document.getElementById('download-btn').style.display = "none";
+            document.getElementById('prog-cont').style.display = "none";
+        }
+    };
+
+    async function processFile() {
+        const fileInput = document.getElementById('real-input');
+        if (fileInput.files.length === 0) {
+            alert("Please select a .docx file!");
+            return;
+        }
+
+        const file = fileInput.files[0];
+        document.getElementById('prog-cont').style.display = "block";
+        document.getElementById('convert-btn').innerText = "Converting...";
+
+        try {
+            // 1. Read Word File as ArrayBuffer
+            const arrayBuffer = await file.arrayBuffer();
+            
+            // 2. Use Mammoth to extract text
+            const result = await mammoth.extractRawText({arrayBuffer: arrayBuffer});
+            const text = result.value;
+
+            // Update Progress UI
+            document.getElementById('prog-bar').style.width = "100%";
+
+            // 3. Create PDF using jsPDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Basic text wrapping for PDF
+            const splitText = doc.splitTextToSize(text, 180);
+            doc.text(splitText, 15, 20);
+
+            pdfBlob = doc.output('blob');
+            finalFileName = file.name.replace(/\.[^/.]+$/, "") + ".pdf";
+
+            // UI Switch
+            setTimeout(() => {
+                document.getElementById('convert-btn').style.display = "none";
+                document.getElementById('download-btn').style.display = "block";
+            }, 500);
+
+        } catch (error) {
+            console.error(error);
+            alert("Error converting file. Make sure it's a valid .docx");
+        }
+    }
+
+    function downloadFile() {
+        if (!pdfBlob) return;
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(pdfBlob);
+        link.download = finalFileName;
+        link.click();
+    }
+</script>
 
 </body>
 </html>
